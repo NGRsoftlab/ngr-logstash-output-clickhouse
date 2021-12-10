@@ -1,3 +1,5 @@
+Copy of https://github.com/funcmike/logstash-output-clickhouse for making custom fixes
+
 # Logstash Plugin
 
 This plugin is a modified version of the Lucidworks logstash json_batch. That plugin is available [here](https://github.com/lucidworks/logstash-output-json_batch). 
@@ -7,10 +9,14 @@ It has been modified to support ClickHouse JSON Format, but also supports fault 
 # Usage
 
 Please note that the name of the plugin when used is `clickhouse`, it only supports json in its current form. If further output formats are added in the future, this might change back to json_batch.
+Field "headers" is not supported by clickhouse-server version 21.4.x, 21.5.x (??) - so you can use fields "store_user" & "store_psw" instead
+Default values for "store_user" & "store_psw" fields: default & default
 
     output {
       clickhouse {
         headers => ["Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM="]
+        store_user => "user"
+        store_psw => "psw"
         http_hosts => ["http://your.clickhouse1/", "http://your.clickhouse2/", "http://your.clickhouse3/"]
         table => "table_name"
         mutations => {

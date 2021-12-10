@@ -25,6 +25,9 @@ class LogStash::Outputs::ClickHouse < LogStash::Outputs::Base
   # format is `headers => ["X-My-Header", "%{host}"]`
   config :headers, :validate => :hash
 
+  config :store_user, :validate => :string, :default => "default"
+  config :store_psw, :validate => :string, :default => "default"
+
   config :flush_size, :validate => :number, :default => 50
 
   config :idle_flush_time, :validate => :number, :default => 5
@@ -73,7 +76,7 @@ class LogStash::Outputs::ClickHouse < LogStash::Outputs::Base
     @request_tokens = SizedQueue.new(@pool_max)
     @pool_max.times {|t| @request_tokens << true }
     @requests = Array.new
-    @http_query = "/?password=1q2w3e4r5t&query=INSERT%20INTO%20#{table}%20FORMAT%20JSONEachRow"
+    @http_query = "/?user=#{store_user}&password=#{store_psw}&query=INSERT%20INTO%20#{table}%20FORMAT%20JSONEachRow"
 
     @hostnames_pool =
       parse_http_hosts(http_hosts,
